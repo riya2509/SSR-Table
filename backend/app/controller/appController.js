@@ -54,7 +54,7 @@ appController.generateData = (req, res) => {
 };
 
 appController.getData = (req, res) => {
-  let { row, page, column, order } = req.query;
+  let { row, page, column, order, value, filter } = req.query;
   row = isNaN(row) || row <= 0 ? 0 : row;
   page = page <= 0 || isNaN(page) ? 0 : (page - 1) * row;
   column = [
@@ -70,12 +70,27 @@ appController.getData = (req, res) => {
   ].includes(column)
     ? column
     : "id";
+  filter = [
+    "product",
+    "id",
+    "name",
+    "department",
+    "price",
+    "adjective",
+    "isbn",
+    "description",
+    "material",
+  ].includes(filter)
+    ? filter
+    : "id";
   order = ["asc", "desc"].includes(order) ? order : "asc";
-  mysql(
-    `SELECT * from product order by ${column} ${order} LIMIT ${row} OFFSET ${page}`
-  )
+  const tableQuery = `SELECT * from product WHERE ${filter} like '%${
+    value || ""
+  }%' order by ${column} ${order} LIMIT ${row} OFFSET ${page}`;
+  console.log(tableQuery);
+  mysql(tableQuery)
     .then((response) => {
-      res.send({ data: response });
+      res.send({ count: (response ?? []).length, data: response });
     })
     .catch((e) => {
       console.log(e);
