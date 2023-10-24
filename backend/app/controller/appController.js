@@ -54,16 +54,32 @@ appController.generateData = (req, res) => {
 };
 
 appController.getData = (req, res) => {
-  let { row, page } = req.query;
+  let { row, page, column, order } = req.query;
   row = isNaN(row) || row <= 0 ? 0 : row;
   page = page <= 0 || isNaN(page) ? 0 : (page - 1) * row;
-  mysql(`SELECT * from product LIMIT ${row} OFFSET ${page}`)
+  column = [
+    "product",
+    "id",
+    "name",
+    "department",
+    "price",
+    "adjective",
+    "isbn",
+    "description",
+    "material",
+  ].includes(column)
+    ? column
+    : "id";
+  order = ["asc", "desc"].includes(order) ? order : "asc";
+  mysql(
+    `SELECT * from product order by ${column} ${order} LIMIT ${row} OFFSET ${page}`
+  )
     .then((response) => {
       res.send({ data: response });
     })
     .catch((e) => {
       console.log(e);
-      res.send({ message: `User not found`, error: e });
+      res.send({ message: `Data not found`, error: e });
     });
 };
 
