@@ -54,35 +54,22 @@ appController.generateData = (req, res) => {
 };
 
 appController.getData = (req, res) => {
+  const columnsArray = [
+    "product",
+    "id",
+    "name",
+    "department",
+    "price",
+    "adjective",
+    "isbn",
+    "description",
+    "material",
+  ];
   let { row, page, column, order, value, filter } = req.query;
   row = isNaN(row) || row <= 0 ? 0 : row;
   page = page <= 0 || isNaN(page) ? 0 : (page - 1) * row;
-  column = [
-    "product",
-    "id",
-    "name",
-    "department",
-    "price",
-    "adjective",
-    "isbn",
-    "description",
-    "material",
-  ].includes(column)
-    ? column
-    : "id";
-  filter = [
-    "product",
-    "id",
-    "name",
-    "department",
-    "price",
-    "adjective",
-    "isbn",
-    "description",
-    "material",
-  ].includes(filter)
-    ? filter
-    : "id";
+  column = columnsArray.includes(column) ? column : "id";
+  filter = columnsArray.includes(filter) ? filter : "id";
   order = ["asc", "desc"].includes(order) ? order : "asc";
   const tableQuery = `SELECT * from product WHERE ${filter} like '%${
     value || ""
@@ -90,11 +77,11 @@ appController.getData = (req, res) => {
   console.log(tableQuery);
   mysql(tableQuery)
     .then((response) => {
-      res.send({ count: (response ?? []).length, data: response });
+      res.send({ status: 1, count: (response ?? []).length, data: response });
     })
     .catch((e) => {
       console.log(e);
-      res.send({ message: `Data not found`, error: e });
+      res.send({ status: 0, message: `Data not found`, error: e });
     });
 };
 
