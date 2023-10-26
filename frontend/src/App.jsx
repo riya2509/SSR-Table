@@ -94,10 +94,10 @@ function App() {
             ) => (
               <tr key={id}>
                 <TD $width="2px" $isEven={index % 2 === 0}>
-                  {product}
+                  {id}
                 </TD>
                 <TD $width="2px" $isEven={index % 2 === 0}>
-                  {id}
+                  {product}
                 </TD>
                 <TD $width="200px" $isEven={index % 2 === 0}>
                   {name}
