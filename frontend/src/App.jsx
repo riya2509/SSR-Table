@@ -195,12 +195,12 @@ function App() {
         <Button disabled={page <= 1} onClick={prev}>
           Prev
         </Button>
-        <Button disabled={page === total / 10} onClick={next}>
+        <Button disabled={page === total / row} onClick={next}>
           Next
         </Button>
         <Button
-          disabled={page === total / 10}
-          onClick={() => setPage(total / 10)}
+          disabled={page === total / row}
+          onClick={() => setPage(total / row)}
         >
           Last
         </Button>
