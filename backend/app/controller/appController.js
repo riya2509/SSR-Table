@@ -53,7 +53,7 @@ appController.generateData = (req, res) => {
     .send({ status: 1, message: "Data created.", data: productArray });
 };
 
-appController.getData = (req, res) => {
+appController.getData = async (req, res) => {
   const columnsArray = [
     "product",
     "id",
@@ -73,16 +73,32 @@ appController.getData = (req, res) => {
   order = ["asc", "desc"].includes(order) ? order : "asc";
   const tableQuery = `SELECT * from product WHERE ${filter} like '%${
     value || ""
-  }%' order by ${column} ${order} LIMIT ${row} OFFSET ${page}`;
-  console.log(tableQuery);
-  mysql(tableQuery)
-    .then((response) => {
-      res.send({ status: 1, count: (response ?? []).length, data: response });
-    })
-    .catch((e) => {
-      console.log(e);
-      res.send({ status: 0, message: `Data not found`, error: e });
+  }%' order by ${column} ${order} LIMIT ${row} OFFSET ${page};`;
+  const totalRows = `select count(*) as total from product;`;
+  try {
+    const response = await mysql(tableQuery);
+    const [total] = await mysql(totalRows);
+    res.send({
+      status: 1,
+      total: total?.total ?? 0,
+      count: (response ?? []).length,
+      data: response,
     });
+  } catch (error) {
+    res.send({ status: 0, message: `Data not found`, error });
+  }
+  // mysql(tableQuery)
+  //   .then((response) => {
+  //   })
+  //   .catch((e) => {
+  //     console.log(e);
+  //   });
 };
 
 export default appController;
+/**
+ * While we use async await for promises
+ * place whole function/operation into a try catch block
+ * place async keyword on immediate outer function
+ * and put await keyword before promise function
+ */
