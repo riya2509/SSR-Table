@@ -36,6 +36,7 @@ const TruncateText = styled.div`
 const Button = styled.button`
   margin-top: 15px;
   margin-right: 15px;
+  margin-left: 10px;
   padding: 5px 10px;
   cursor: pointer;
 `;
@@ -46,9 +47,14 @@ const PaginationBar = styled.div`
   align-items: center;
 `;
 
+const RowCountText = styled.div`
+  margin-top: 20px;
+  font-weight: bold;
+`;
+
 const RowLabel = styled.label`
   margin-right: 10px;
-  font-weight: 500;
+  font-weight: bold;
 `;
 
 const RowSelect = styled.select`
@@ -59,6 +65,7 @@ const RowSelect = styled.select`
 const RowWrapper = styled.div`
   flex: 1;
 `;
+
 function App() {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
@@ -189,12 +196,18 @@ function App() {
             </optgroup>
           </RowSelect>
         </RowWrapper>
+        <RowCountText>
+          {page === 1 ? 1 : (page - 1) * row + 1} to {page * row} of {total}
+        </RowCountText>
         <Button disabled={page <= 1} onClick={() => setPage(1)}>
           First
         </Button>
         <Button disabled={page <= 1} onClick={prev}>
           Prev
         </Button>
+        <RowCountText>
+          Page {page} of {total / row}
+        </RowCountText>
         <Button disabled={page === total / row} onClick={next}>
           Next
         </Button>
