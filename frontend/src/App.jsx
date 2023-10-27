@@ -15,6 +15,7 @@ const TH = styled.th`
   border: 1px solid black;
   border-collapse: collapse;
   height: 30px;
+  cursor: pointer;
 `;
 const TD = styled.td`
   border: 1px solid black;
@@ -74,15 +75,15 @@ function App() {
   const [page, setPage] = useState(1);
   const [row, setRow] = useState(10);
   const [count, setCount] = useState(0);
-  // const [column, setColumn] = useState();
-  // const [order, setOrder] = useState();
+  const [column, setColumn] = useState("id");
+  const [order, setOrder] = useState(true);
   // const [value, setValue] = useState();
   // const [filter, setFilter] = useState();
 
   const fetchData = () => {
     axios
       .get("/test/data", {
-        params: { row, page }, // column, order, value, filter
+        params: { row, page, column, order: order ? "asc" : "desc" }, // value, filter
       })
       .then((response) => {
         setData(response?.data?.data);
@@ -104,7 +105,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
-  }, [page, row]);
+  }, [page, row, column, order]);
   // If dependency array is empty useEffect will be called only once .
   //  If dependency array is filled then it changes only on the change of those variables also gets called once when component mounts.
 
@@ -115,15 +116,115 @@ function App() {
       <Table>
         <thead>
           <tr>
-            <TH>Id</TH>
-            <TH>Product</TH>
-            <TH>Name</TH>
-            <TH>Department</TH>
-            <TH>Price</TH>
-            <TH>Adjective</TH>
-            <TH>Isbn</TH>
-            <TH>Description</TH>
-            <TH>Material</TH>
+            <TH
+              onClick={() => {
+                setColumn("id");
+                // setOrder((prev) => !prev);
+                if (column === "id") {
+                  setOrder((prev) => !prev);
+                } else {
+                  setOrder(true);
+                }
+              }}
+            >
+              Id
+            </TH>
+            <TH
+              onClick={() => {
+                setColumn("product");
+                if (column === "product") {
+                  setOrder((prev) => !prev);
+                } else {
+                  setOrder(true);
+                }
+              }}
+            >
+              Product
+            </TH>
+            <TH
+              onClick={() => {
+                setColumn("name");
+                if (column === "name") {
+                  setOrder((prev) => !prev);
+                } else {
+                  setOrder(true);
+                }
+              }}
+            >
+              Name
+            </TH>
+            <TH
+              onClick={() => {
+                setColumn("department");
+                if (column === "department") {
+                  setOrder((prev) => !prev);
+                } else {
+                  setOrder(true);
+                }
+              }}
+            >
+              Department
+            </TH>
+            <TH
+              onClick={() => {
+                setColumn("price");
+                if (column === "price") {
+                  setOrder((prev) => !prev);
+                } else {
+                  setOrder(true);
+                }
+              }}
+            >
+              Price
+            </TH>
+            <TH
+              onClick={() => {
+                setColumn("adjective");
+                if (column === "adjective") {
+                  setOrder((prev) => !prev);
+                } else {
+                  setOrder(true);
+                }
+              }}
+            >
+              Adjective
+            </TH>
+            <TH
+              onClick={() => {
+                setColumn("isbn");
+                if (column === "isbn") {
+                  setOrder((prev) => !prev);
+                } else {
+                  setOrder(true);
+                }
+              }}
+            >
+              Isbn
+            </TH>
+            <TH
+              onClick={() => {
+                setColumn("description");
+                if (column === "description") {
+                  setOrder((prev) => !prev);
+                } else {
+                  setOrder(true);
+                }
+              }}
+            >
+              Description
+            </TH>
+            <TH
+              onClick={() => {
+                setColumn("material");
+                if (column === "material") {
+                  setOrder((prev) => !prev);
+                } else {
+                  setOrder(true);
+                }
+              }}
+            >
+              Material
+            </TH>
           </tr>
         </thead>
         <tbody>
@@ -198,7 +299,6 @@ function App() {
           </RowSelect>
         </RowWrapper>
         <RowCountText>
-          {console.log(count, page)}
           {page === 1 ? 1 : (page - 1) * row + 1} to{" "}
           {count < row ? total : count * page} of {total}
         </RowCountText>

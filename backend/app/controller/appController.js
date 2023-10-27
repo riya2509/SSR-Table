@@ -74,6 +74,7 @@ appController.getData = async (req, res) => {
   const tableQuery = `SELECT * from product WHERE ${filter} like '%${
     value || ""
   }%' order by ${column} ${order} LIMIT ${row} OFFSET ${page};`;
+  console.log(tableQuery);
   const totalRows = `select count(*) as total from product;`;
   try {
     const response = await mysql(tableQuery);
