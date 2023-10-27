@@ -73,6 +73,7 @@ function App() {
 
   const [page, setPage] = useState(1);
   const [row, setRow] = useState(10);
+  const [count, setCount] = useState(0);
   // const [column, setColumn] = useState();
   // const [order, setOrder] = useState();
   // const [value, setValue] = useState();
@@ -85,8 +86,8 @@ function App() {
       })
       .then((response) => {
         setData(response?.data?.data);
-        // console.log(response.data.total);
         setTotal(response?.data?.total);
+        setCount(response?.data?.count);
       })
       .catch((err) => {
         console.log(err);
@@ -107,7 +108,7 @@ function App() {
   // If dependency array is empty useEffect will be called only once .
   //  If dependency array is filled then it changes only on the change of those variables also gets called once when component mounts.
 
-  console.log(page);
+  const totalPage = Math.ceil(total / row);
 
   return (
     <>
@@ -197,7 +198,9 @@ function App() {
           </RowSelect>
         </RowWrapper>
         <RowCountText>
-          {page === 1 ? 1 : (page - 1) * row + 1} to {page * row} of {total}
+          {console.log(count, page)}
+          {page === 1 ? 1 : (page - 1) * row + 1} to{" "}
+          {count < row ? total : count * page} of {total}
         </RowCountText>
         <Button disabled={page <= 1} onClick={() => setPage(1)}>
           First
@@ -206,14 +209,14 @@ function App() {
           Prev
         </Button>
         <RowCountText>
-          Page {page} of {total / row}
+          Page {page} of {totalPage}
         </RowCountText>
-        <Button disabled={page === total / row} onClick={next}>
+        <Button disabled={page === totalPage} onClick={next}>
           Next
         </Button>
         <Button
-          disabled={page === total / row}
-          onClick={() => setPage(total / row)}
+          disabled={page === totalPage}
+          onClick={() => setPage(totalPage)}
         >
           Last
         </Button>
