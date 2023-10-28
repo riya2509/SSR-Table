@@ -59,12 +59,21 @@ const RowLabel = styled.label`
 `;
 
 const RowSelect = styled.select`
-  width: 75px;
+  width: 65px;
   padding: 5px 10px;
   outline: none;
 `;
+
+const ColumnSelect = styled.select`
+  width: 105px;
+`;
 const RowWrapper = styled.div`
   flex: 1;
+`;
+
+const SearchBar = styled.input`
+  width: 100px;
+  margin-left: 20px;
 `;
 
 function App() {
@@ -77,13 +86,20 @@ function App() {
   const [count, setCount] = useState(0);
   const [column, setColumn] = useState("id");
   const [order, setOrder] = useState(true);
-  // const [value, setValue] = useState();
-  // const [filter, setFilter] = useState();
+  const [value, setValue] = useState("");
+  const [filter, setFilter] = useState("id");
 
   const fetchData = () => {
     axios
       .get("/test/data", {
-        params: { row, page, column, order: order ? "asc" : "desc" }, // value, filter
+        params: {
+          row,
+          page,
+          column,
+          order: order ? "asc" : "desc",
+          value,
+          filter,
+        },
       })
       .then((response) => {
         setData(response?.data?.data);
@@ -105,7 +121,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
-  }, [page, row, column, order]);
+  }, [page, row, column, order, value]);
   // If dependency array is empty useEffect will be called only once .
   //  If dependency array is filled then it changes only on the change of those variables also gets called once when component mounts.
 
@@ -298,6 +314,29 @@ function App() {
             </optgroup>
           </RowSelect>
         </RowWrapper>
+        <RowWrapper>
+          <RowLabel htmlFor="filter"> Filter</RowLabel>
+          <ColumnSelect
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            name="filters"
+          >
+            <optgroup label="Choose a filter-">
+              <option value={"id"}>Id</option>
+              <option value={"product"}>Product</option>
+              <option value={"name"}>Name</option>
+              <option value={"department"}>Department</option>
+              <option value={"price"}>Price</option>
+              <option value={"adjective"}>Adjective</option>
+              <option value={"isbn"}>Isbn</option>
+              <option value={"description"}>Description</option>
+              <option value={"material"}>Material</option>
+            </optgroup>
+          </ColumnSelect>
+
+          <SearchBar onChange={(e) => setValue(e.target.value)}></SearchBar>
+        </RowWrapper>
+
         <RowCountText>
           {page === 1 ? 1 : (page - 1) * row + 1} to{" "}
           {count < row ? total : count * page} of {total}
